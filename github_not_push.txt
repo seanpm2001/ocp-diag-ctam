@@ -1,3 +1,4 @@
 "add file path after: "
 
 D:\a\1\s\github_push.txt
+D:\a\1\s\ctam\tests\fw_update\fw_update_group_N\test_new.py
