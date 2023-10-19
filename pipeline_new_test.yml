@@ -28,18 +28,23 @@ jobs:
         git clone --branch github_ADO_sync_test --origin origin --progress -v https://github.com/opencomputeproject/ocp-diag-ctam.git
         dir
       displayName: Clone github repo into target
+
         
+    - script: |
+        echo "Hello"
+      displayName: Push files to github repo
+
+
+
     - script: |
         setlocal enabledelayedexpansion
         set SOURCE_DIR=$(Build.SourcesDirectory)
         set DEST_DIR=$(Agent.BuildDirectory)\target\ocp-diag-ctam
 
-        for /F %%F in ($(Build.SourcesDirectory)\github_push.txt) do (
-          set FILE_DIR=%%~dpF
-          set FILE_INTERMEDIATE_DIR=!FILE_DIR:%SOURCE_DIR%=!
-          echo %%F
-          xcopy /E /Y /S %%F "%DEST_DIR%!FILE_INTERMEDIATE_DIR!"
+        for /F %%F in ($(Build.SourcesDirectory)\github_not_push.txt) do (		
+          del %%F
         )
+        xcopy /S /E /Y %SOURCE_DIR% %DEST_DIR%
         
         cd..
         cd target\ocp-diag-ctam
