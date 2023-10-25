@@ -1,0 +1,53 @@
+trigger:
+- none
+
+pool:
+  vmImage: Windows-latest
+
+variables:
+- name: gitpat 
+  value: $(GithubPat)
+
+jobs:
+  - job: Push_files_from_ADO_to_Github    
+    steps:
+    - checkout: self
+      persistCredentials: true
+      clean: true
+
+    - script: |
+        git config --global user.email v-akeshs@microsoft.com
+        git config --global user.name "akeshMS"
+      displayName: Configure Git
+
+    - script: |
+        git remote rm origin
+        cd..
+        mkdir target
+        cd target
+        git clone --branch github_ADO_sync_test --origin origin --progress -v https://github.com/opencomputeproject/ocp-diag-ctam.git
+        dir
+      displayName: Clone github repo into target
+
+
+    - script: |
+        setlocal enabledelayedexpansion
+        set SOURCE_DIR=$(Build.SourcesDirectory)
+        set DEST_DIR=$(Agent.BuildDirectory)\target\ocp-diag-ctam
+
+        for /F %%F in ($(Build.SourcesDirectory)\github_not_push.txt) do (		
+          del /s /q %%F
+          rmdir /s /q %%F
+        )
+        xcopy /S /E /Y %SOURCE_DIR% %DEST_DIR%
+        
+        cd..
+        cd target\ocp-diag-ctam
+        dir
+        git pull origin
+        git add .
+        git commit -m "moving files to github repo"
+        git status        
+        git push https://$(GithubPat)@github.com/opencomputeproject/ocp-diag-ctam.git HEAD:refs/heads/github_ADO_sync_test
+      displayName: Push files to github repo
+
