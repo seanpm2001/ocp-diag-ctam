@@ -27,6 +27,7 @@ class TelemetryIfcInt(type):
         :rtype: TelemetryIfc
         """
         def ctam_get_all_metric_reports(self):
+            from prettytable import PrettyTable
             mr_uri_list = self.ctam_get_all_metric_reports_uri()
             mr_json = {}
             for URI in mr_uri_list:
