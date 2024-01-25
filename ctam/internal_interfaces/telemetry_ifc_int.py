@@ -26,41 +26,24 @@ class TelemetryIfcInt(type):
         :return: instance
         :rtype: TelemetryIfc
         """
-        def ctam_get_all_metric_reports(self):
-            from prettytable import PrettyTable
-            mr_uri_list = self.ctam_get_all_metric_reports_uri()
-            mr_json = {}
-            for URI in mr_uri_list:
-                response = self.dut().run_redfish_command(uri="{}{}".format(self.dut().uri_builder.format_uri(redfish_str="{GPUMC}", component_type="GPU"), URI))
-                JSONData = response.dict
-                for metric_property in JSONData["MetricValues"]:
-                    mr_json[metric_property["MetricProperty"]] = metric_property["MetricValue"]
-            if self.dut().is_console_log:
-                t = PrettyTable(["MetricProperty", "MetricValue"])
-                for k, v in mr_json.items():
-                    t.add_row([k, v])
-                t.align["MetricProperty"] = "r"
-                print(t)
-            self.write_test_info("{}".format(mr_json))
-            return mr_json
         
-        def ctam_baseboard_gpu_processor_metrics(self): #need improvement
-            """
-            :Description:				Read back the data of /redfish/v1/Systems/{BaseboardId}/Processors/{GpuId}/ProcessorMetrics
+        # def ctam_baseboard_gpu_processor_metrics(self): #need improvement
+        #     """
+        #     :Description:				Read back the data of /redfish/v1/Systems/{BaseboardId}/Processors/{GpuId}/ProcessorMetrics
 
-            :returns:				    Array of all URIs under ProcessorMetrics
-            """
-            import ast
-            MyName = __name__ + "." + self.ctam_baseboard_gpu_processor_metrics.__qualname__
-            system_gpu_id = ast.literal_eval(self.dut().uri_builder.format_uri(redfish_str="{SystemGPUIDs}", component_type="GPU"))
-            baseboard_id = ast.literal_eval(self.dut().uri_builder.format_uri(redfish_str="{BaseboardIDs}", component_type="GPU"))
-            result = True
-            for id in baseboard_id:
-                for gpu_id in system_gpu_id:
-                    uri = "/Systems/" + id + "/Processors/" + gpu_id + "/ProcessorMetrics"
-                    gpu_uri = self.dut().uri_builder.format_uri(redfish_str="{BaseURI}" + uri, component_type="GPU")
-                    result &= self.ctam_redfish_GET_status_ok(uri=gpu_uri)
-            return result
+        #     :returns:				    Array of all URIs under ProcessorMetrics
+        #     """
+        #     import ast
+        #     MyName = __name__ + "." + self.ctam_baseboard_gpu_processor_metrics.__qualname__
+        #     system_gpu_id = ast.literal_eval(self.dut().uri_builder.format_uri(redfish_str="{SystemGPUIDs}", component_type="GPU"))
+        #     baseboard_id = ast.literal_eval(self.dut().uri_builder.format_uri(redfish_str="{BaseboardIDs}", component_type="GPU"))
+        #     result = True
+        #     for id in baseboard_id:
+        #         for gpu_id in system_gpu_id:
+        #             uri = "/Systems/" + id + "/Processors/" + gpu_id + "/ProcessorMetrics"
+        #             gpu_uri = self.dut().uri_builder.format_uri(redfish_str="{BaseURI}" + uri, component_type="GPU")
+        #             result &= self.ctam_redfish_GET_status_ok(uri=gpu_uri)
+        #     return result
         
         def ctam_get_chassis_environment_metrics(self):
             """
