@@ -78,20 +78,4 @@ class TelemetryIfc(FunctionalIfc, metaclass=Meta):
         self.write_test_info("{}".format(mr_json))
         return mr_json
         
-    def ctam_baseboard_gpu_processor_metrics(self): #need improvement
-        """
-        :Description:				Read back the data of /redfish/v1/Systems/{BaseboardId}/Processors/{GpuId}/ProcessorMetrics
-
-        :returns:				    Array of all URIs under ProcessorMetrics
-        """
-        MyName = __name__ + "." + self.ctam_baseboard_gpu_processor_metrics.__qualname__
-        system_gpu_id = ast.literal_eval(self.dut().uri_builder.format_uri(redfish_str="{SystemGPUIDs}", component_type="GPU"))
-        baseboard_id = ast.literal_eval(self.dut().uri_builder.format_uri(redfish_str="{BaseboardIDs}", component_type="GPU"))
-        result = True
-        for id in baseboard_id:
-            for gpu_id in system_gpu_id:
-                uri = "/Systems/" + id + "/Processors/" + gpu_id + "/ProcessorMetrics"
-                gpu_uri = self.dut().uri_builder.format_uri(redfish_str="{BaseURI}" + uri, component_type="GPU")
-                result &= self.ctam_redfish_GET_status_ok(uri=gpu_uri)
-        return result
     
