@@ -12,21 +12,12 @@ import time
 import json
 from ocptv.output import LogSeverity
 from utils.json_utils import *
+try:
+    from internal_interfaces.ras_ifc_int import RasIfcInt as Meta
+except:
+    from utils.ctam_utils import MetaNull as Meta
 
-class RasIfc(FunctionalIfc):
-
-    _instance: Optional["RasIfc"] = None
-
-    def __new__(cls, *args, **kwargs):
-        """
-        ensure only 1 instance can be created
-
-        :return: instance
-        :rtype: RasIfc
-        """
-        if not isinstance(cls._instance, cls):
-            cls._instance = super(RasIfc, cls).__new__(cls, *args, **kwargs)
-        return cls._instance
+class RasIfc(FunctionalIfc, metaclass=Meta):
     
     def __init__(self):
         super().__init__()
@@ -34,18 +25,6 @@ class RasIfc(FunctionalIfc):
         self.logdump_uri_list = []
         self.dumplog_uri_list = []
         self.JSONData = {}
-
-    @classmethod
-    def get_instance(cls, *args, **kwargs):
-        """
-        if there is an existing instance, return it, otherwise create the singleton instance and return it
-
-        :return: instance
-        :rtype: RasIfc
-        """
-        if not isinstance(cls._instance, cls):
-            cls._instance = cls(*args, **kwargs)
-        return cls._instance
     
     def ctam_discover_crashdump_cap(self):
         """
